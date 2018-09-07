@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>html-js</title>
+</head>
+<body>
+    <p align="center">
+        <canvas id="mycanvas"></canvas>
+    </p>
+</body>
+<script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script>
+<script>
+    var sketchProc = function(processingInstance) {
+        with (processingInstance) {
+
+            /*XOR function
+
+            inputs  |   output
+            0,0     |   0
+            1,0     |   1
+            0,1     |   1
+            1,1     |   0
+
+            This code will try to use a neural network to recognise that when it receives an input of (1,1) the output will be 0.
+            */
+            var sigmoid = function (x) { //activation function
+                return (1 / (1 + Math.pow(Math.E, -x)));//(Math.round((1 / (1 + Math.pow(Math.E, -x)))*100))/100;
+            }
+            var sigPrime = function (x) { //derivative of sigmoid
+                return (sigmoid(x)(1 - sigmoid(x)));
+            }
+            console.log(sigmoid(1));
+            var Node = function (sum, result, x, y, w, h) { //node object
+                this.value = value;
+                this.x = x;
+                this.y = y;
+                this.h = h;
+                this.w = w;
+            };
+
+            Node.prototype.draw = function () { //draw node
+                stroke(0, 0, 0);
+                fill(255, 255, 255);
+                ellipse(this.x, this.y, this.w, this.h);
+                fill(0, 0, 0);
+                text(this.sum, this.x, this.y);
+                text(this.result, this.x, this.y - 10);
+            };
+            Node.prototype.calculate = function () {
+                this.result = sigmoid(this.value);
+            }
+
+            var Synapse = function (value, node0, node1) { //synapse object, they connect nodes
+                this.value = value;
+                this.node0 = node0;
+                this.node1 = node1;
+            }
+
+            Synapse.prototype.draw = function () { //draw synapse
+                stroke(0, 0, 0);
+                text(this.value, (this.node0.x + this.node1.x) / 2, (this.node0.y + this.node1.y) / 2);
+                strokeWeight(0.1 + this.value*2);
+                line(this.node0.x, this.node0.y, this.node1.x, this.node1.y);
+                strokeWeight(1);
+            }
+            Synapse.prototype.add = function () { //adds value to
+                this.node1.sum += (this.value * this.node0.result);
+            }
+
+            size(740, 400);
+            frameRate(30); 
+            background(255, 255, 200);
+            // ---actual coding goes below this line, most functions and variables above this line---
+
+            fill(0, 0, 0);
+            stroke(255, 255, 255);
+            var inputs = [new Node(1, 100, 150, 40, 40), new Node(1, 100, 250, 40, 40)]; //input layer
+            var hiddens = [new Node(0, 300, 100, 40, 40), new Node(0, 300, 200, 40, 40), new Node(0, 300, 300, 40, 40)]; //hidden layer 1
+            var outputs = [new Node(0, 500, 200, 40, 40)]; //output layer
+            var iSynapses = [];
+            var oSynapses = [];
+
+            for (var i = 0; i < inputs.length; i++) { //input synapses
+                for (var j = 0; j < hiddens.length; j++) {
+                    iSynapses.push(new Synapse(random(0, 1), inputs[i], hiddens[j]));
+                }
+            }
+            for (var i = 0; i < hiddens.length; i++) { //output synapses
+                for (var j = 0; j < outputs.length; j++) {
+                    oSynapses.push(new Synapse(random(0, 1), hiddens[i], outputs[j]));
+                }
+            }
+            for (var i = 0; i < iSynapses.length; i++) {
+                iSynapses[i].add();
+            }
+
+            for (var i = 0; i < hiddens.length; i++) {
+                hiddens[i].calculate();
+            }
+
+            for (var i = 0; i < oSynapses.length; i++) {
+                oSynapses[i].add();
+            }
+            outputs[0].calculate();
+            /*
+            for (var i = 0; i < outputs.length; i++) {
+                outputs[i].draw();
+            }*/
+            console.log(iSynapses);
+            console.log(oSynapses);
+            console.log(hiddens);
+            console.log(outputs);
+            //println(synapses);
+            /*
+            inputs[0].value = 0;
+            
+            var syn = new Synapse(random(0, 1), inputs[0], hiddens[1]);
+
+            syn.draw();
+            println(inputs[1].value);
+            inputs[0].draw();
+            hiddens[1].draw();
+            */
+            
+                background(255, 255, 200);
+                
+                for (var i = 0; i < iSynapses.length; i++) {
+                    iSynapses[i].draw();
+                }
+                for (var i = 0; i < oSynapses.length; i++) {
+                    oSynapses[i].draw();
+                }
+
+                for (var i = 0; i < inputs.length; i++) {
+                    inputs[i].draw();
+                }
+                for (var i = 0; i < hiddens.length; i++) {
+                    hiddens[i].draw();
+                }
+                for (var i = 0; i < outputs.length; i++) {
+                    outputs[i].draw();
+                }
+            draw = function () {
+            }
+            
+        }
+    };
+    var canvas = document.getElementById("mycanvas");
+
+    var processingInstance = new Processing(canvas, sketchProc);
+
+</script>
+</html>
