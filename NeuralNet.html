@@ -23,35 +23,34 @@
 
             This code will try to use a neural network to recognise that when it receives an input of (1,1) the output will be 0.
             */
-            var sigmoid = function (x) { //activation function
+            var sigmoid = function (x) { //activation function or sigmoid function
                 return (1 / (1 + Math.pow(Math.E, -x)));//(Math.round((1 / (1 + Math.pow(Math.E, -x)))*100))/100;
             }
             var sigPrime = function (x) { //derivative of sigmoid
                 return (sigmoid(x)(1 - sigmoid(x)));
             }
-            console.log(sigmoid(1));
+
             var Node = function (sum, result, x, y, w, h) { //node object
-                this.value = value;
+                this.sum = sum;
+                this.result = result;
                 this.x = x;
                 this.y = y;
                 this.h = h;
                 this.w = w;
             };
-
             Node.prototype.draw = function () { //draw node
                 stroke(0, 0, 0);
                 fill(255, 255, 255);
                 ellipse(this.x, this.y, this.w, this.h);
                 fill(0, 0, 0);
                 text(this.sum, this.x, this.y);
-                text(this.result, this.x, this.y - 10);
+                text(this.result, this.x, this.y + 10);
             };
-            Node.prototype.calculate = function () {
-                this.result = sigmoid(this.value);
+            Node.prototype.calculate = function () { //the sum is turned into an activation number
+                this.result = sigmoid(this.sum);
             }
 
-            var Synapse = function (value, node0, node1) { //synapse object, they connect nodes
-                this.value = value;
+            var Synapse = function (value, node0, node1) { //synapse object
                 this.node0 = node0;
                 this.node1 = node1;
             }
@@ -63,7 +62,7 @@
                 line(this.node0.x, this.node0.y, this.node1.x, this.node1.y);
                 strokeWeight(1);
             }
-            Synapse.prototype.add = function () { //adds value to
+            Synapse.prototype.add = function () { //inputs sum of the products of the input nodes and the synapses into the next layer of nodes
                 this.node1.sum += (this.value * this.node0.result);
             }
 
@@ -74,11 +73,13 @@
 
             fill(0, 0, 0);
             stroke(255, 255, 255);
-            var inputs = [new Node(1, 100, 150, 40, 40), new Node(1, 100, 250, 40, 40)]; //input layer
-            var hiddens = [new Node(0, 300, 100, 40, 40), new Node(0, 300, 200, 40, 40), new Node(0, 300, 300, 40, 40)]; //hidden layer 1
-            var outputs = [new Node(0, 500, 200, 40, 40)]; //output layer
+            var inputs = [new Node(1, 1, 100, 150, 40, 40), new Node(1, 1, 100, 250, 40, 40)]; //input layer
+            var hiddens = [new Node(0, 0, 300, 100, 40, 40), new Node(0, 0, 300, 200, 40, 40), new Node(0, 0, 300, 300, 40, 40)]; //hidden layer 1
+            var outputs = [new Node(0, 0, 500, 200, 40, 40)]; //output layer
             var iSynapses = [];
             var oSynapses = [];
+            var error = 0;
+            var deltaSum = 0;
 
             for (var i = 0; i < inputs.length; i++) { //input synapses
                 for (var j = 0; j < hiddens.length; j++) {
@@ -102,6 +103,8 @@
                 oSynapses[i].add();
             }
             outputs[0].calculate();
+
+
             /*
             for (var i = 0; i < outputs.length; i++) {
                 outputs[i].draw();
