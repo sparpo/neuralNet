@@ -12,7 +12,12 @@
 <script>
     var sketchProc = function(processingInstance) {
         with (processingInstance) {
-
+            /**
+            *Author: Joey Corbett
+            *Version: 0
+            *
+            *
+            **/
             var sigmoid = function (x) { //activation function or sigmoid function
                 return (1 / (1 + Math.pow(Math.E, -x)));//(Math.round((1 / (1 + Math.pow(Math.E, -x)))*100))/100;
             }
@@ -128,7 +133,7 @@
             draw = function () {
                 background(255, 255, 200);
                 text("target output: " + trainingData[dataSet].output + ", error: " + error, 550, 200 );
-                for (var i = 0; i < iSynapses.length; i++) {
+                for (var i = 0; i < iSynapses.length; i++) { //draws everything
                     iSynapses[i].draw();
                 }
                 for (var i = 0; i < oSynapses.length; i++) {
