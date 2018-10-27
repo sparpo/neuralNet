@@ -15,13 +15,13 @@
             /**
             *Author: Joey Corbett
             *Version: 0.1
-            *Info: I decided to get rid of any visual representation of the neural net for now as it just clutters up the code
+            *Info: 
             *
             **/
             var sigmoid = function (x) { //activation function or sigmoid function
                 return (1 / (1 + Math.pow(Math.E, -x)));//(Math.round((1 / (1 + Math.pow(Math.E, -x)))*100))/100;
             }
-            var sigPrime = function (x) { //derivative of sigmoid
+            var sigPrime = function (x) { //derivative/slope of sigmoid
                 return (sigmoid(x)*(1 - sigmoid(x)));
             }
             
@@ -36,8 +36,8 @@
                 fill(255, 255, 255);
                 ellipse(this.x, this.y, 60, 60);
                 fill(0, 0, 0);
-                text("sum: " + Math.round(this.sum*100)/100, this.x - 25, this.y);
-                text("result: " + Math.round(this.result*100)/100, this.x - 25, this.y + 10);
+                text("sum: " + Math.round(this.sum * 100) / 100, this.x - 25, this.y);
+                text("result: " + Math.round(this.result * 100) / 100, this.x - 25, this.y + 10);
             };
             Node.prototype.calculate = function () { //the sum is turned into an activation number
                 this.result = sigmoid(this.sum);
@@ -82,14 +82,21 @@
             }];
             var dataSet = 0;
             var gen = 0;
-            var inputs = [new Node(trainingData[dataSet].input[0], trainingData[dataSet].input[0], 100, 150), new Node(trainingData[dataSet].input[1], trainingData[dataSet].input[1], 100, 250)]; //input layer
-            var hiddens = [new Node(0, 0, 300, 100), new Node(0, 0, 300, 200), new Node(0, 0, 300, 300)]; //hidden layer 1
-            var outputs = [new Node(0, 0, 500, 200)]; //output layer
-            var iSynapses = [];
-            var oSynapses = [];
-            var error = 0;
-            var deltaOutput = 0;
-            var deltaHidden = 0;
+            var inputs = [ //input layer
+                [1, 1],
+                [0, 1],
+                [1, 0],
+                [0, 0]
+            ]; 
+            var targetOutputs = [1, 0, 0, 0]; //each value corresponds to a pair of inputs
+            var hiddens = [0, 0, 0]; //hidden layer 1
+            var outputs = [0]; //output layer
+            var iWeights = []; //input weights
+            var hWeights = []; //output weights
+            var learningRate = 1; 
+            var error = 0; //difference between output and target
+            var deltaOutput = 0; //change in out
+            var deltaHidden = 0; //change in hidden
             
             size(740, 400); //size of canvas
             frameRate(0); 
@@ -99,14 +106,14 @@
             fill(0, 0, 0);
             stroke(255, 255, 255);
             
-            for (var i = 0; i < inputs.length; i++) { 
+            for (var i = 0; i < inputs.length; i++) {
                 for (var j = 0; j < hiddens.length; j++) {
-                    iSynapses.push(new Synapse(random(0, 1), inputs[i], hiddens[j]));
+                    iWeights.push(random(0, 1)); //sets random weights for each input
                 }
             }
             for (var i = 0; i < hiddens.length; i++) {
                 for (var j = 0; j < outputs.length; j++) {
-                    oSynapses.push(new Synapse(random(0, 1), hiddens[i], outputs[j]));
+                    hWeights.push(random(0, 1)); //sets random weights for each hidden
                 }
             }
             /*
@@ -133,7 +140,7 @@
             draw = function () {
                 background(255, 255, 200);
                 text("target output: " + trainingData[dataSet].output + ", error: " + error, 550, 200 );
-                for (var i = 0; i < iSynapses.length; i++) { //draws everything
+                /*for (var i = 0; i < iSynapses.length; i++) { //draws everything
                     iSynapses[i].draw();
                 }
                 for (var i = 0; i < oSynapses.length; i++) {
@@ -148,7 +155,7 @@
                 }
                 for (var i = 0; i < outputs.length; i++) {
                     outputs[i].draw();
-                }
+                }*/
             }
             mouseClicked = function () {
                 println("generation " + gen);
