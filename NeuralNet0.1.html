@@ -27,13 +27,6 @@
             var sigNum = function (x) {
                 return x/Math.abs(x);
             }
-            var dot = function (x) { 
-                for(var i = 0; i < x.length; i++) { //goes through the vectors
-                    for(var j = 0; j < x.length; j++) { //goes through vector components
-                    
-                    }
-                }
-            }
             
             var Node = function (sum, result, x, y) { //node object
                 this.sum = sum;
@@ -126,99 +119,15 @@
                     hWeights.push(random(0, 1)); //sets random weights for each hidden
                 }
             }
-            /*
-            for (var i = 0; i < iSynapses.length; i++) {
-                iSynapses[i].add();
-            }
-
-            for (var i = 0; i < hiddens.length; i++) {
-                hiddens[i].calculate();
-            }
-
-            for (var i = 0; i < oSynapses.length; i++) {
-                oSynapses[i].add();
-            }
-            outputs[0].calculate();
-            error = trainingData[0].output - outputs[0].result;
-            deltaOutput = sigPrime(outputs[0].sum)*(error);
-            console.log(error);
-            
-            /*
-            for (var i = 0; i < outputs.length; i++) {
-                outputs[i].draw();
-            */            
+  
             draw = function () {
                 background(255, 255, 200);
                 text("target output: " + trainingData[dataSet].output + ", error: " + error, 550, 200 );
-                /*for (var i = 0; i < iSynapses.length; i++) { //draws everything
-                    iSynapses[i].draw();
-                }
-                for (var i = 0; i < oSynapses.length; i++) {
-                    oSynapses[i].draw();
-                }
-
-                for (var i = 0; i < inputs.length; i++) {
-                    inputs[i].draw();
-                }
-                for (var i = 0; i < hiddens.length; i++) {
-                    hiddens[i].draw();
-                }
-                for (var i = 0; i < outputs.length; i++) {
-                    outputs[i].draw();
-                }*/
             }
             mouseClicked = function () {
                 println("generation " + gen);
                 var k = 0;
-                if (gen != 0) {
-                    for (var j = 0; j < inputs.length; j++) {
-                        for (var i = 0; i < hiddens.length; i++) {
-                            var deltaWeight = (deltaOutput / oSynapses[i].value) * sigPrime(oSynapses[i].node0.sum);
-                            deltaWeight = deltaWeight * trainingData[dataSet].input[j];
-                            iSynapses[k].value += deltaWeight;
-                            k++;
-                        }
-                    }
-                    for (var i = 0; i < oSynapses.length; i++) {
-                        var deltaWeight = deltaOutput / oSynapses[i].node0.result;
-                        oSynapses[i].value += deltaWeight;
-                        //console.log(deltaWeight);
-                    }
-                }
-                for (var i = 0; i < hiddens.length; i++) {
-                    hiddens[i].sum = 0;
-                    hiddens[i].result = 0;
-                }
-                for (var i = 0; i < outputs.length; i++) {
-                    outputs[i].sum = 0;
-                    outputs[i].result = 0;
-                }
-                for (var i = 0; i < iSynapses.length; i++) {
-                    iSynapses[i].add();
-                }
-
-                for (var i = 0; i < hiddens.length; i++) {
-                    hiddens[i].calculate();
-                }
-
-                for (var i = 0; i < oSynapses.length; i++) {
-                    oSynapses[i].add();
-                }
-                outputs[0].calculate();
-                error = trainingData[dataSet].output - outputs[0].result; //the calulated output - the target output = error
-                deltaOutput = sigPrime(outputs[0].sum) * (error);
-                console.log(error);
-                dataSet++;
-                gen++;
-                if (dataSet >= trainingData.length) { //use next training data
-                    dataSet = 0;
-                    //console.log("false");
-                }
-                //console.log(dataSet);
-                for (var i = 0; i < inputs.length; i++) {
-                    inputs[i].sum = trainingData[dataSet].input[i];
-                    inputs[i].result = trainingData[dataSet].input[i];
-                }
+                
             }
         }
     };
